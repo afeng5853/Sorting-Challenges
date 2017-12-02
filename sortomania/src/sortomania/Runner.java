@@ -5,18 +5,19 @@ import java.util.Arrays;
 
 /**
  * Note: Numbers are printed to prevent JIT from optimizing
- *  1. bucket sort
- *	2. radix sort
- *	3. bucket sort
- *  4. counting sort
+ *  1. bucket sort   100138
+ *	2. radix sort    1162271
+ *	3. bucket sort   106706
+ *  4. counting sort 22755735
+ *  5. Arrays.sort   1524293   (from challenge two (radix sort excluded (can't assume it's a string) ) )
  * @author alex
  *
  */
 public class Runner {
 	public static void main(String[] args) {
 		//challengeOne();
-		//challengeTwo();
-		challengeThree();
+		challengeTwo();
+		//challengeThree();
 		//challengeFour();
 	}
 
