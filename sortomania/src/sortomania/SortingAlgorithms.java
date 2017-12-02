@@ -237,6 +237,11 @@ public class SortingAlgorithms {
 		return (a[len/2-1] + a[len/2]) / 2;
 	}
 
+	/**
+	 * equivalent to counting sort since # of buckets = length;
+	 * @param a
+	 * @return
+	 */
 	public static double bucketSort(int[] a) {
 	      int [] bucket=new int[10001];
 
@@ -265,6 +270,92 @@ public class SortingAlgorithms {
 		}
 		return -1;
 	}
+
+
+	public static double mergeSort(int [ ] a)
+	{
+		int[] tmp = new int[a.length];
+		mergeSort(a, tmp,  0,  a.length - 1);
+		return 0;
+	}
+
+	private static void mergeSort(int [ ] a, int [ ] tmp, int left, int right)
+	{
+		if( left < right )
+		{
+			int center = (left + right) / 2;
+			mergeSort(a, tmp, left, center);
+			mergeSort(a, tmp, center + 1, right);
+			merge(a, tmp, left, center + 1, right);
+		}
+	}
+
+
+    private static void merge(int[ ] a, int[ ] tmp, int left, int right, int rightEnd )
+    {
+        int leftEnd = right - 1;
+        int k = left;
+        int num = rightEnd - left + 1;
+
+        while(left <= leftEnd && right <= rightEnd)
+            if(a[left] < a[right])
+                tmp[k++] = a[left++];
+            else
+                tmp[k++] = a[right++];
+
+        while(left <= leftEnd)    // Copy rest of first half
+            tmp[k++] = a[left++];
+
+        while(right <= rightEnd)  // Copy rest of right half
+            tmp[k++] = a[right++];
+
+        // Copy tmp back
+        for(int i = 0; i < num; i++, rightEnd--)
+            a[rightEnd] = tmp[rightEnd];
+    }
+
+	public static int mergeSort(String [ ] a, String search)
+	{
+		Comparable[] tmp = new Comparable[a.length];
+		mergeSort(a, tmp,  0,  a.length - 1);
+		return 0;
+	}
+
+
+	private static void mergeSort(Comparable [ ] a, Comparable [ ] tmp, int left, int right)
+	{
+		if( left < right )
+		{
+			int center = (left + right) / 2;
+			mergeSort(a, tmp, left, center);
+			mergeSort(a, tmp, center + 1, right);
+			merge(a, tmp, left, center + 1, right);
+		}
+	}
+
+
+    private static void merge(Comparable[ ] a, Comparable[ ] tmp, int left, int right, int rightEnd )
+    {
+        int leftEnd = right - 1;
+        int k = left;
+        int num = rightEnd - left + 1;
+
+        while(left <= leftEnd && right <= rightEnd)
+            if(a[left].compareTo(a[right]) <= 0)
+                tmp[k++] = a[left++];
+            else
+                tmp[k++] = a[right++];
+
+        while(left <= leftEnd)    // Copy rest of first half
+            tmp[k++] = a[left++];
+
+        while(right <= rightEnd)  // Copy rest of right half
+            tmp[k++] = a[right++];
+
+        // Copy tmp back
+        for(int i = 0; i < num; i++, rightEnd--)
+            a[rightEnd] = tmp[rightEnd];
+    }
 
 	public static int bucketSort(String[] a, String search) {
 	      String[][] bucket = new String[26][10000];
@@ -458,6 +549,56 @@ public class SortingAlgorithms {
         return matchIdx;
     }
 
+	public static double heapSort(int arr[])
+    {
+        int n = arr.length;
+
+        // Build heap (rearrange array)
+        for (int i = n / 2 - 1; i >= 0; i--)
+            heapify(arr, n, i);
+
+        // One by one extract an element from heap
+        for (int i=n-1; i>=0; i--)
+        {
+            // Move current root to end
+            int temp = arr[0];
+            arr[0] = arr[i];
+            arr[i] = temp;
+
+            // call max heapify on the reduced heap
+            heapify(arr, i, 0);
+        }
+        return 0;
+    }
+
+    // To heapify a subtree rooted with node i which is
+    // an index in arr[]. n is size of heap
+    private static void heapify(int arr[], int n, int i)
+    {
+        int largest = i;  // Initialize largest as root
+        int l = 2*i + 1;  // left = 2*i + 1
+        int r = 2*i + 2;  // right = 2*i + 2
+
+        // If left child is larger than root
+        if (l < n && arr[l] > arr[largest])
+            largest = l;
+
+        // If right child is larger than largest so far
+        if (r < n && arr[r] > arr[largest])
+            largest = r;
+
+        // If largest is not root
+        if (largest != i)
+        {
+            int swap = arr[i];
+            arr[i] = arr[largest];
+            arr[largest] = swap;
+
+            // Recursively heapify the affected sub-tree
+            heapify(arr, n, largest);
+        }
+    }
+
 	public static double insertionSortMedians(int[][] arr, double[] medians) {
 		for (int i = 1; i < medians.length; i++) {
 			int j = i-1;
@@ -503,4 +644,6 @@ public class SortingAlgorithms {
 		}
 		return insertionSortMedians(arr, medians);
 	}
+
+
 }

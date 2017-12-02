@@ -21,27 +21,6 @@ public class TestCases {
 	}
 
 	/**
-	 * Only works for sorting algorithms that make copies
-	 * @param a
-	 * @param func
-	 * @param iterations
-	 * @return
-	 */
-	public static BigInteger calculateTimeDouble(int[] a, Function<int[],Double> func, int iterations) {
-		BigInteger sum = BigInteger.valueOf(0);
-		Double median = -1.0;
-		for (int i = 0; i < iterations; i++) {
-			int[] tested = Arrays.copyOfRange(a, 0, a.length);
-			long time = System.nanoTime();
-			median = func.apply(tested);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
-			assert(isSorted(tested));
-		}
-		System.out.print("median:" + median + " ");
-		return sum.divide(BigInteger.valueOf(iterations));
-	}
-
-	/**
 	 * Sorting (all random)
 	 * @param a
 	 * @param func
@@ -55,10 +34,49 @@ public class TestCases {
 			int[] tested = generate.apply(10000, 10000);
 			long time = System.nanoTime();
 			median = func.apply(tested);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
 			assert(isSorted(tested));
 		}
-		System.out.print("median:" + median + " ");
+		//System.out.print("median:" + median + " ");
+		return sum.divide(BigInteger.valueOf(iterations));
+	}
+
+	/**
+	 * arrays.sort
+	 * @param generate
+	 * @param iterations
+	 * @return
+	 */
+	public static BigInteger calculateTimeDoubleRandom(BiFunction<Integer, Integer, int[]> generate,  int iterations) {
+		BigInteger sum = BigInteger.valueOf(0);
+		Double median = -1.0;
+		for (int i = 0; i < iterations; i++) {
+			int[] tested = generate.apply(10000, 10000);
+			long time = System.nanoTime();
+			Arrays.parallelSort(tested);
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
+			assert(isSorted(tested));
+		}
+		//System.out.print("median:" + median + " ");
+		return sum.divide(BigInteger.valueOf(iterations));
+	}
+
+	public static BigInteger calculateTimeDoubleRandomString(BiFunction<Integer, Integer, String[]> generate,  int iterations) {
+		BigInteger sum = BigInteger.valueOf(0);
+		for (int i = 0; i < iterations; i++) {
+			String[] tested = generate.apply(10000, 5);
+			long time = System.nanoTime();
+			Arrays.parallelSort(tested);
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
+			assert(isSorted(tested));
+		}
+		//System.out.print("index : -1 ");
 		return sum.divide(BigInteger.valueOf(iterations));
 	}
 
@@ -69,33 +87,15 @@ public class TestCases {
 			int[][] tested = generate.apply(1000, 10000);
 			long time = System.nanoTime();
 			median = func.apply(tested);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
 			assert(isSorted(tested));
 		}
-		System.out.print("median:" + median + " ");
+		//System.out.print("median:" + median + " ");
 		return sum.divide(BigInteger.valueOf(iterations));
 	}
 
-	public static BigInteger calculateTimeDoubleRandomString(Function<String[],Double> func, BiFunction<Integer, Integer, String[]> generate,  int iterations) {
-		BigInteger sum = BigInteger.valueOf(0);
-		Double median = -1.0;
-		for (int i = 0; i < iterations; i++) {
-			String[] tested = generate.apply(10000, 5);
-			long time = System.nanoTime();
-			func.apply(tested);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
-			assert(isSorted(tested));
-		}
-		return sum.divide(BigInteger.valueOf(iterations));
-	}
-
-	/**
-	 * Sorting (all random)
-	 * @param a
-	 * @param func
-	 * @param iterations
-	 * @return
-	 */
 	public static BigInteger calculateTimeDoubleRandom(TriFunction<int[], Integer, Integer, Double> func, BiFunction<Integer, Integer, int[]> generate, int iterations) {
 		BigInteger sum = BigInteger.valueOf(0);
 		Double median = -1.0;
@@ -103,10 +103,12 @@ public class TestCases {
 			int[] tested = generate.apply(10000, 10000);
 			long time = System.nanoTime();
 			median = func.apply(tested, 0, 10000);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
 			assert(isSorted(tested));
 		}
-		System.out.print("median:" + median + " ");
+		//System.out.print("median:" + median + " ");
 		return sum.divide(BigInteger.valueOf(iterations));
 	}
 
@@ -116,7 +118,9 @@ public class TestCases {
 			String[] tested = generate.apply(10000, 5);
 			long time = System.nanoTime();
 			func.apply(tested, 0, 10000);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
 			assert(isSorted(tested));
 		}
 		return sum.divide(BigInteger.valueOf(iterations));
@@ -130,10 +134,12 @@ public class TestCases {
 			String[] tested = generate.apply(10000, 5);
 			long time = System.nanoTime();
 			idx = func.apply(tested, tested[0]);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
 			assert(isSorted(tested));
 		}
-		System.out.print("Index: " + idx + " ");
+		//System.out.print("Index: " + idx + " ");
 		return sum.divide(BigInteger.valueOf(iterations));
 	}
 
@@ -151,10 +157,12 @@ public class TestCases {
 			int[] tested = Arrays.copyOfRange(a, 0, a.length);
 			long time = System.nanoTime();
 			median = func.apply(tested, 0, 10000);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
 			assert(isSorted(tested));
 		}
-		System.out.print("median:" + median + " ");
+		//System.out.print("median:" + median + " ");
 		return sum.divide(BigInteger.valueOf(iterations));
 	}
 
@@ -171,7 +179,9 @@ public class TestCases {
 			Comparable<Object>[] tested = Arrays.copyOfRange(a, 0, a.length);
 			long time = System.nanoTime();
 			func.apply(tested);
-			sum = sum.add(BigInteger.valueOf((System.nanoTime() - time)));
+			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
+			System.out.println(calcTime);
+			sum = sum.add(calcTime);
 			assert(isSorted(tested));
 		}
 		return sum.divide(BigInteger.valueOf(iterations));
@@ -232,6 +242,9 @@ public class TestCases {
 				if (a[i][j] < a[i][j-1]) {
 					return false;
 				}
+			}
+			if (i != 0 && a[i][a[i].length-1] < a[i-1][0]) {
+				return false;
 			}
 		}
 		return true;
