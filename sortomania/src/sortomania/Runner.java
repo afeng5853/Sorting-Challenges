@@ -5,6 +5,10 @@ import java.util.Arrays;
 
 /**
  * Note: Numbers are printed to prevent JIT from optimizing
+ *  1. bucket sort
+ *	2. radix sort
+ *	3. bucket sort
+ *  4. counting sort
  * @author alex
  *
  */
