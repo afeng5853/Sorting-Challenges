@@ -6,8 +6,8 @@ import java.util.Arrays;
 /**
  * Note: Numbers are printed to prevent JIT from optimizing
  *  1. bucket sort   100138
- *	2. radix sort    1162271
- *	3. bucket sort   106706
+ *	2. radix sort    1162271     string range?
+ *	3. bucket sort   106706      is a section of the array 75% sorted or is 75% of numbers in the correct position of the sorted array
  *  4. counting sort 22755735
  *  5. Arrays.sort   1524293   (from challenge two (radix sort excluded (can't assume it's a string) ) )
  * @author alex
