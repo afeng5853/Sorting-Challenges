@@ -8,7 +8,7 @@ import java.util.Arrays;
  *  1. bucket sort / counting sort 				   100138
  *	2. parallel radix sort    		 			   678015     string range?
  *	3. bucket sort   				 			   106706     is a section of the array 75% sorted or is 75% of numbers in the correct position of the sorted array
- *  4. bucket sort / counting sort with parallel   13713012
+ *  4. bucket sort / counting sort with parallel   12626821
  *  5. Arrays.sort   				 			   1524293   (from challenge two (radix sort excluded (can't assume it's a string) ) )
  * @author alex
  *
@@ -95,14 +95,14 @@ public class Runner {
 	public static void challengeFour() {
 		System.out.println("Challenge 4");
 
-		BigInteger time2 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::quickSortMatrix, GenerateArray::generateMultiDim, 1000);
+		//BigInteger time2 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::quickSortMatrix, GenerateArray::generateMultiDim, 1000);
 
-		BigInteger time3 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::radixSortMatrix, GenerateArray::generateMultiDim, 1000);
+		//BigInteger time3 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::radixSortMatrix, GenerateArray::generateMultiDim, 1000);
 
 		BigInteger time4 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::bucketSortMatrix, GenerateArray::generateMultiDim, 1000);
 
-		System.out.println("Quick Sort:    " + time2);
-		System.out.println("Radix Sort:    " + time3);
+		//System.out.println("Quick Sort:    " + time2);
+		//System.out.println("Radix Sort:    " + time3);
 		System.out.println("Counting Sort / Bucket Sort:   " + time4);
 		System.out.println();
 	}

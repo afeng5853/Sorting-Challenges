@@ -238,11 +238,11 @@ public class SortingAlgorithms {
 	}
 
 	private static double median(int[] a, int len) {
-		return (a[len/2-1] + a[len/2]) / 2;
+		return (a[len/2-1] + a[len/2]) / 2.0;
 	}
 
 	private static double median(double[] a, int len) {
-		return (a[len/2-1] + a[len/2]) / 2;
+		return (a[len/2-1] + a[len/2]) / 2.0;
 	}
 
 	/**
@@ -665,17 +665,26 @@ public class SortingAlgorithms {
         }
     }
 
-	public static double insertionSortMedians(int[][] arr, double[] medians) {
-		for (int i = 1; i < medians.length; i++) {
-			int j = i-1;
-			int k = i;
-			while (j != -1 && medians[k] < medians[j]) {
-				swap(arr, k, j);
-				swap(medians, k, j);
-				j--;
-				k--;
-			}
-		}
+	public static double bucketSortMedians(int[][] arr, double[] medians) {
+		  ArrayList<int[]>[] bucket = new ArrayList[20000];
+
+		  for (int i = 0; i < bucket.length; i++) {
+			  bucket[i] = new ArrayList<int[]>();
+		  }
+		  
+	      for (int i=0; i< medians.length; i++) {
+	    	  int idx = (int) (medians[i] * 2);
+	    	  bucket[idx].add(arr[i]);
+	      }
+	      int outPos=0;
+	      
+	      for (int i=0; i< bucket.length; i++) {
+	         for (int j=0; j < bucket[i].size(); j++) {
+	        	 //System.out.println(median(bucket[i].get(j), bucket[i].get(j).length));
+	             arr[outPos++] = bucket[i].get(j);
+	         }
+	      }
+
 		return median(medians, 1000);
 	}
 
@@ -684,7 +693,7 @@ public class SortingAlgorithms {
 		for (int i = 0; i < arr.length; i++) {
 			medians[i] = countingSort(arr[i]);
 		}
-		return insertionSortMedians(arr, medians);
+		return bucketSortMedians(arr, medians);
 	}
 
 	public static double quickSortMatrix(int[][] arr) {
@@ -692,7 +701,7 @@ public class SortingAlgorithms {
 		for (int i = 0; i < arr.length; i++) {
 			medians[i] = quickSort(arr[i], 0, 1000);
 		}
-		return insertionSortMedians(arr, medians);
+		return bucketSortMedians(arr, medians);
 	}
 
 	public static double radixSortMatrix(int[][] arr) {
@@ -700,13 +709,12 @@ public class SortingAlgorithms {
 		for (int i = 0; i < arr.length; i++) {
 			medians[i] = radixSort(arr[i]);
 		}
-		return insertionSortMedians(arr, medians);
+		return bucketSortMedians(arr, medians);
 	}
 
 	public static double bucketSortMatrix(int[][] arr) {
 		ExecutorService executor = Executors.newCachedThreadPool();
         CompletionService<Double> completionService = new ExecutorCompletionService<Double>(executor);
-		double[] medians = new double[arr.length];
 		for (final int[] row : arr) {
 			Callable<Double> c = new Callable<Double>() {
 	            @Override
@@ -728,15 +736,22 @@ public class SortingAlgorithms {
 				e1.printStackTrace();
 			}
 		  try {
-		     Double result = resultFuture.get();
-		     medians[received++] = result;
+		     resultFuture.get();
+		     received++;
 		  }
 		  catch(Exception e) {
 		         errors = true;
 		  }
 		}
 		
-		return insertionSortMedians(arr, medians);
+		double[] medians = new double[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			int[] row = arr[i];
+			medians[i] = median(row, row.length);
+		}
+		
+		
+		return bucketSortMedians(arr, medians);
 	}
 
 
