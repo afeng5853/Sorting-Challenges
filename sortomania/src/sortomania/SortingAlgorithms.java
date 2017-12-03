@@ -2,6 +2,14 @@ package sortomania;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SortingAlgorithms {
 	/**
@@ -238,6 +246,35 @@ public class SortingAlgorithms {
 	}
 
 	/**
+	 * Sorts an array of integers using counting sort
+	 *
+	 * Pros: O(n) for integers
+	 * Cons: A limited range of integers has to be specified
+	 * 		 Range of integers is limited by memory
+	 *
+	 * For the first iteration, record the number of occurrences of an integer in an integer array with the key being the number
+	 * and the value being the number of occurrences
+	 *
+	 * For the second iteration, insert each number starting from 0 to n (where n is the max) with the respective number of occurrences
+	 * @param arr
+	 * @return
+	 */
+	public static double countingSort(int[] arr) {
+		int[] stored = new int[10001];
+		for (int i = 0; i < arr.length; i++) {
+			stored[arr[i]]++;
+		}
+		int resultIdx = 0;
+		for (int i = 0; i < stored.length; i++) {
+			for (int j=0; j<stored[i]; j++) {
+	            arr[resultIdx++]=i;
+	         }
+		}
+		return median(arr, arr.length);
+	}
+
+	
+	/**
 	 * equivalent to counting sort since # of buckets = length;
 	 * @param a
 	 * @return
@@ -245,15 +282,12 @@ public class SortingAlgorithms {
 	public static double bucketSort(int[] a) {
 	      int [] bucket=new int[10001];
 
-	      for (int i=0; i<bucket.length; i++) {
-	         bucket[i]=0;
-	      }
-
 	      for (int i=0; i<a.length; i++) {
 	         bucket[a[i]]++;
 	      }
 
 	      int outPos=0;
+	      
 	      for (int i=0; i<bucket.length; i++) {
 	         for (int j=0; j<bucket[i]; j++) {
 	            a[outPos++]=i;
@@ -387,37 +421,6 @@ public class SortingAlgorithms {
 	     return matchIdx;
 	 }
 
-	/**
-	 * Sorts an array of integers using counting sort
-	 *
-	 * Pros: O(n) for integers
-	 * Cons: A limited range of integers has to be specified
-	 * 		 Range of integers is limited by memory
-	 *
-	 * For the first iteration, record the number of occurrences of an integer in an integer array with the key being the number
-	 * and the value being the number of occurrences
-	 *
-	 * For the second iteration, insert each number starting from 0 to n (where n is the max) with the respective number of occurrences
-	 * @param arr
-	 * @return
-	 */
-	public static double countingSort(int[] arr) {
-		int[] stored = new int[10001];
-		int[] result = new int[arr.length];
-		for (int i = 0; i < arr.length; i++) {
-			int num = arr[i];
-			stored[num]++;
-		}
-		int resultIdx = 0;
-		for (int i = 0; i < stored.length; i++) {
-			while (stored[i] > 0) {
-				arr[resultIdx] = i;
-				stored[i]--;
-				resultIdx++;
-			}
-		}
-		return median(arr, arr.length);
-	}
 
 	private static void countingSort(int[] arr, int exp) {
 		int[] stored = new int[10];
@@ -453,7 +456,6 @@ public class SortingAlgorithms {
 	}
 
 	public static double radixSort(int[] arr) {
-		//int max = max(arr);
 		for (int exp = 1; exp < 10000; exp *= 10) {
 			countingSort(arr, exp);
 		}
@@ -523,32 +525,96 @@ public class SortingAlgorithms {
         int matchIdx = -1;
         String[] aux = new String[n];
 
-        for (int d = w-1; d >= 0; d--) {
-            // sort by key-indexed counting on dth character
-
-            // compute frequency counts
-            int[] count = new int[R+1];
-            for (int i = 0; i < n; i++)
-                count[a[i].charAt(d) + 1]++;
-
-            // compute cumulates
-            for (int r = 0; r < R; r++)
-                count[r+1] += count[r];
-
-            // move data
-            for (int i = 0; i < n; i++)
-                aux[count[a[i].charAt(d)]++] = a[i];
-
-            // copy back
-            for (int i = 0; i < n; i++) {
-            	if (aux[i].equals(match))
-            		matchIdx = i;
-                a[i] = aux[i];
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        CompletionService<Integer> completionService = 
+        	       new ExecutorCompletionService<Integer>(executor);
+        
+        Callable<Integer> c = new Callable<Integer>() {
+            @Override
+            public Integer call() {
+            	return radixSortHelper(R, n, a, 4, aux, match);
             }
-        }
+        };
+        Callable<Integer> c1 = new Callable<Integer>() {
+            @Override
+            public Integer call() {
+            	return radixSortHelper(R, n, a, 3, aux, match);
+            }
+        };
+        Callable<Integer> c2 = new Callable<Integer>() {
+            @Override
+            public Integer call() {
+            	return radixSortHelper(R, n, a, 2, aux, match);
+            }
+        };
+        Callable<Integer> c3 = new Callable<Integer>() {
+            @Override
+            public Integer call() {
+            	return radixSortHelper(R, n, a, 1, aux, match);
+            }
+        };
+        Callable<Integer> c4 = new Callable<Integer>() {
+            @Override
+            public Integer call() {
+            	return radixSortHelper(R, n, a, 0, aux, match);
+            }
+        };
+        
+        completionService.submit(c);
+        completionService.submit(c1);
+        completionService.submit(c2);
+        completionService.submit(c3);
+        completionService.submit(c4);
+        
+
+		int received = 0;
+		boolean errors = false;
+		
+		while(received < 4 && !errors) {
+		    Future<Integer> resultFuture = null;
+			try {
+				resultFuture = completionService.take();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		  try {
+		     int result = resultFuture.get();
+		     received++;
+		     if (result != -1) {
+		    	 matchIdx = result;
+		     }
+		  }
+		  catch(Exception e) {
+		         errors = true;
+		      }
+		}
         return matchIdx;
     }
 
+	public static int radixSortHelper(int R, int n, String[] a, int d, String[] aux, String match) {
+		int[] count = new int[R+1];
+		int matchIdx = -1;
+        for (int i = 0; i < n; i++)
+            count[a[i].charAt(d) + 1]++;
+
+        // compute cumulates
+        for (int r = 0; r < R; r++)
+            count[r+1] += count[r];
+
+        // move data
+        for (int i = 0; i < n; i++)
+            aux[count[a[i].charAt(d)]++] = a[i];
+
+        // copy back
+        for (int i = 0; i < n; i++) {
+        	if (aux[i].equals(match)) {
+        		matchIdx = i;
+        	}
+            a[i] = aux[i];
+        }
+        return matchIdx;
+	}
+	
 	public static double heapSort(int arr[])
     {
         int n = arr.length;
@@ -638,10 +704,38 @@ public class SortingAlgorithms {
 	}
 
 	public static double bucketSortMatrix(int[][] arr) {
+		ExecutorService executor = Executors.newCachedThreadPool();
+        CompletionService<Double> completionService = new ExecutorCompletionService<Double>(executor);
 		double[] medians = new double[arr.length];
-		for (int i = 0; i < arr.length; i++) {
-			medians[i] = bucketSort(arr[i]);
+		for (final int[] row : arr) {
+			Callable<Double> c = new Callable<Double>() {
+	            @Override
+	            public Double call() {
+	            	return bucketSort(row);
+	            }
+	        };
+	        completionService.submit(c);
 		}
+
+		int received = 0;
+		boolean errors = false;
+		
+		while(received < 1000 && !errors) {
+		    Future<Double> resultFuture = null;
+			try {
+				resultFuture = completionService.take();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		  try {
+		     Double result = resultFuture.get();
+		     medians[received++] = result;
+		  }
+		  catch(Exception e) {
+		         errors = true;
+		  }
+		}
+		
 		return insertionSortMedians(arr, medians);
 	}
 

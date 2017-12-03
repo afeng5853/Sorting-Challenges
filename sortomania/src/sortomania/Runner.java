@@ -5,20 +5,20 @@ import java.util.Arrays;
 
 /**
  * Note: Numbers are printed to prevent JIT from optimizing
- *  1. bucket sort   100138
- *	2. radix sort    1162271     string range?
- *	3. bucket sort   106706      is a section of the array 75% sorted or is 75% of numbers in the correct position of the sorted array
- *  4. counting sort 22755735
- *  5. Arrays.sort   1524293   (from challenge two (radix sort excluded (can't assume it's a string) ) )
+ *  1. bucket sort / counting sort 				   100138
+ *	2. parallel radix sort    		 			   678015     string range?
+ *	3. bucket sort   				 			   106706     is a section of the array 75% sorted or is 75% of numbers in the correct position of the sorted array
+ *  4. bucket sort / counting sort with parallel   13713012
+ *  5. Arrays.sort   				 			   1524293   (from challenge two (radix sort excluded (can't assume it's a string) ) )
  * @author alex
  *
  */
 public class Runner {
 	public static void main(String[] args) {
 		//challengeOne();
-		challengeTwo();
+		//challengeTwo();
 		//challengeThree();
-		//challengeFour();
+		challengeFour();
 	}
 
 	public static void challengeOne() {
@@ -94,7 +94,6 @@ public class Runner {
 
 	public static void challengeFour() {
 		System.out.println("Challenge 4");
-		BigInteger time1 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::countingSortMatrix, GenerateArray::generateMultiDim, 1000);
 
 		BigInteger time2 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::quickSortMatrix, GenerateArray::generateMultiDim, 1000);
 
@@ -102,10 +101,9 @@ public class Runner {
 
 		BigInteger time4 = TestCases.calculateTimeDoubleRandomMat(SortingAlgorithms::bucketSortMatrix, GenerateArray::generateMultiDim, 1000);
 
-		System.out.println("Counting Sort: " + time1);
 		System.out.println("Quick Sort:    " + time2);
 		System.out.println("Radix Sort:    " + time3);
-		System.out.println("Bucket Sort:   " + time4);
+		System.out.println("Counting Sort / Bucket Sort:   " + time4);
 		System.out.println();
 	}
 
