@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Note: Numbers are printed to prevent JIT from optimizing
  *  1. bucket sort / counting sort 				   100138
- *	2. parallel radix sort    		 			   678015     string range?
+ *	2. radix sort    		 			           1139166    parallel version did not work (maybe find one?)
  *	3. bucket sort / counting sort   			   106706     is a section of the array 75% sorted or is 75% of numbers in the correct position of the sorted array
  *												   30000      for 75% correct position
  *  4. bucket sort / counting sort with parallel   12626821
@@ -17,8 +17,8 @@ import java.util.Arrays;
 public class Runner {
 	public static void main(String[] args) {
 		//challengeOne();
-		//challengeTwo();
-		challengeThree();
+		challengeTwo();
+		//challengeThree();
 		//challengeFour();
 	}
 

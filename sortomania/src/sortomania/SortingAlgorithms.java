@@ -518,77 +518,37 @@ public class SortingAlgorithms {
 	 * @param a
 	 * @param w
 	 */
-	public static int radixSort(String[] a, String match) {
-        int n = a.length;
-        int w = 5;
-        int R = 256;   // extend ASCII alphabet size
-        int matchIdx = -1;
-        String[] aux = new String[n];
+	 public static int radixSort(String[] a, String match) {
+	        int n = a.length;
+	        int w = 5;
+	        int R = 256;   // extend ASCII alphabet size
+	        int matchIdx = -1;
+	        String[] aux = new String[n];
 
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        CompletionService<Integer> completionService = 
-        	       new ExecutorCompletionService<Integer>(executor);
-        
-        Callable<Integer> c = new Callable<Integer>() {
-            @Override
-            public Integer call() {
-            	return radixSortHelper(R, n, a, 4, aux, match);
-            }
-        };
-        Callable<Integer> c1 = new Callable<Integer>() {
-            @Override
-            public Integer call() {
-            	return radixSortHelper(R, n, a, 3, aux, match);
-            }
-        };
-        Callable<Integer> c2 = new Callable<Integer>() {
-            @Override
-            public Integer call() {
-            	return radixSortHelper(R, n, a, 2, aux, match);
-            }
-        };
-        Callable<Integer> c3 = new Callable<Integer>() {
-            @Override
-            public Integer call() {
-            	return radixSortHelper(R, n, a, 1, aux, match);
-            }
-        };
-        Callable<Integer> c4 = new Callable<Integer>() {
-            @Override
-            public Integer call() {
-            	return radixSortHelper(R, n, a, 0, aux, match);
-            }
-        };
-        
-        completionService.submit(c);
-        completionService.submit(c1);
-        completionService.submit(c2);
-        completionService.submit(c3);
-        completionService.submit(c4);
-        
+	        for (int d = w-1; d >= 0; d--) {
+	            // sort by key-indexed counting on dth character
 
-		int received = 0;
-		boolean errors = false;
-		
-		while(received < 4 && !errors) {
-		    Future<Integer> resultFuture = null;
-			try {
-				resultFuture = completionService.take();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		  try {
-		     int result = resultFuture.get();
-		     received++;
-		     if (result != -1) {
-		    	 matchIdx = result;
-		     }
-		  }
-		  catch(Exception e) {
-		         errors = true;
-		      }
-		}
-        return matchIdx;
+	            // compute frequency counts
+	            int[] count = new int[R+1];
+	            for (int i = 0; i < n; i++)
+	                count[a[i].charAt(d) + 1]++;
+
+	            // compute cumulates
+	            for (int r = 0; r < R; r++)
+	                count[r+1] += count[r];
+
+	            // move data
+	            for (int i = 0; i < n; i++)
+	                aux[count[a[i].charAt(d)]++] = a[i];
+
+	            // copy back
+	            for (int i = 0; i < n; i++) {
+	            	if (aux[i].equals(match))
+	            		matchIdx = i;
+	                a[i] = aux[i];
+	            }
+	        }
+	        return matchIdx;
     }
 
 	public static int radixSortHelper(int R, int n, String[] a, int d, String[] aux, String match) {
