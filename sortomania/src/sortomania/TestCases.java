@@ -121,6 +121,7 @@ public class TestCases {
 			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
 			System.out.println(calcTime);
 			sum = sum.add(calcTime);
+			printArray(tested);
 			assert(isSorted(tested));
 		}
 		return sum.divide(BigInteger.valueOf(iterations));

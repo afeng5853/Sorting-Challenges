@@ -175,31 +175,58 @@ public class SortingAlgorithms {
 		return j;
 	}
 
-	public static int partition(String[] list, int a, int b) {
-		// if list is empty
-		if (list.length == 0) {
-			return -1;
+	public static int[] dualPartition(String[] list, int a, int b) {
+		if (list[a].compareTo(list[b]) > 0) {
+			swap(list, a, b);
 		}
-		String pivot = list[a]; // set pivot to first item
-		int j = a; // current index to swap for items less than the pivot
-		int pivotIdx = a;
-		for (int i = a + 1; i < b; i++) {
-			if (list[i].compareTo(pivot) < 0) {
-				// track pivot index
-				if (pivotIdx == j) {
-					pivotIdx = i;
+		
+		int j = a + 1;
+		int g = b - 1;
+		int k = a + 1;
+		String p = list[a];
+		String q = list[b];
+		
+		while (k <= g) {
+			if (list[k].compareTo(p) < 0) {
+				swap(list, k, j);
+				j++;	
+			} else if (list[k].compareTo(q) >= 0) {
+				while(list[g].compareTo(q) > 0 && k < g) {
+					g--;
 				}
-				// swap pivot to latest index in the small partition
-				swap(list, i, j);
-				j++;
+				if (list[k].compareTo(p) < 0) {
+					swap(list, k, j);
+					j++;
+				}
+				
 			}
-
+			k++;
 		}
-		// return pivot to correct location
-		swap(list, pivotIdx, j);
-		return j;
+		j--;
+		g++;
+		
+		swap(list, a, j);
+		swap(list, b, g);
+		
+		return new int[] {j, g};
 	}
 
+	public static double quickSort(String[] arr, int i, int j) {
+		if (j - i <= 1) {
+			return 0;
+		}
+		else {
+			//CopyArrays.printArray(arr);
+			int[] pivotIdxs = dualPartition(arr, i, j-1);
+			int lp = pivotIdxs[0];
+			int rp = pivotIdxs[1];
+			quickSort(arr, i, lp - 1);
+			quickSort(arr, lp + 1, rp - 1);
+			quickSort(arr, rp + 1, j);
+			return 0;
+		}
+	}
+	
 	/**
 	 * Sorts an array using quick sort
 	 * @param arr the array to be sorted
@@ -227,7 +254,10 @@ public class SortingAlgorithms {
 	 * @param j
 	 * @return
 	 */
-	public static double quickSort(String[] arr, int i, int j) {
+	public static double quickSort2(String[] arr, int i, int j) {
+		if (arr.length < 9000) {
+			insertionSort(arr);
+		}
 		if (j - i <= 1) {
 			return 0;
 		}
@@ -239,7 +269,25 @@ public class SortingAlgorithms {
 			return 0;
 		}
 	}
+	
+	
 
+	public static double quickSort3(String[] arr, int i, int j) {
+		if (arr.length < 1000) {
+			heapSort(arr);
+		}
+		if (j - i <= 1) {
+			return 0;
+		}
+		else {
+			//CopyArrays.printArray(arr);
+			int pivotIdx = partition(arr, i, j);
+			quickSort(arr, i, pivotIdx);
+			quickSort(arr, pivotIdx + 1, j);
+			return 0;
+		}
+	}
+	
 	private static double median(int[] a, int len) {
 		return (a[len/2-1] + a[len/2]) / 2.0;
 	}
@@ -284,13 +332,10 @@ public class SortingAlgorithms {
 	 */
 	public static double bucketSort(int[] a) {
 	      int [] bucket=new int[10001];
-
 	      for (int i=0; i<a.length; i++) {
 	         bucket[a[i]]++;
 	      }
-
 	      int outPos=0;
-	      
 	      for (int i=0; i<bucket.length; i++) {
 	         for (int j=0; j<bucket[i]; j++) {
 	            a[outPos++]=i;
@@ -706,6 +751,28 @@ public class SortingAlgorithms {
         }
         return 0;
     }
+	
+	public static double heapSort(Object arr[])
+    {
+        int n = arr.length;
+
+        // Build heap (rearrange array)
+        for (int i = n / 2 - 1; i >= 0; i--)
+            heapify(arr, n, i);
+
+        // One by one extract an element from heap
+        for (int i=n-1; i>=0; i--)
+        {
+            // Move current root to end
+            int temp = arr[0];
+            arr[0] = arr[i];
+            arr[i] = temp;
+
+            // call max heapify on the reduced heap
+            heapify(arr, i, 0);
+        }
+        return 0;
+    }
 
     // To heapify a subtree rooted with node i which is
     // an index in arr[]. n is size of heap
@@ -721,6 +788,32 @@ public class SortingAlgorithms {
 
         // If right child is larger than largest so far
         if (r < n && arr[r] > arr[largest])
+            largest = r;
+
+        // If largest is not root
+        if (largest != i)
+        {
+            int swap = arr[i];
+            arr[i] = arr[largest];
+            arr[largest] = swap;
+
+            // Recursively heapify the affected sub-tree
+            heapify(arr, n, largest);
+        }
+    }
+    
+    private static void heapify(String arr[], int n, int i)
+    {
+        int largest = i;  // Initialize largest as root
+        int l = 2*i + 1;  // left = 2*i + 1
+        int r = 2*i + 2;  // right = 2*i + 2
+
+        // If left child is larger than root
+        if (l < n && arr[l].compareTo(arr[largest]) > 0)
+            largest = l;
+
+        // If right child is larger than largest so far
+        if (r < n && arr[r].compareTo(arr[largest]) > 0)
             largest = r;
 
         // If largest is not root
