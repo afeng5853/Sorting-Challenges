@@ -78,6 +78,9 @@ public class SortingAlgorithms {
 		for (int i = 1; i < list1.length; i++) {
 			int j = i-1;
 			int k = i;
+			if (list1[k] == null || list1[j] == null) {
+				break;
+			}
 			while (j != -1 && list1[k].compareTo(list1[j]) < 0) {
 				swap(list1, k, j);
 				j--;
@@ -296,16 +299,6 @@ public class SortingAlgorithms {
 	     return median(a, a.length);
 	 }
 
-	public static int mapChar(char letter) {
-		if (Character.isLowerCase(letter)) {
-			return ((int) letter) - 97;
-		} else {
-			System.out.println("woops mr levin, i thought string was alpha only");
-		}
-		return -1;
-	}
-
-
 	public static double mergeSort(int [ ] a)
 	{
 		int[] tmp = new int[a.length];
@@ -347,11 +340,53 @@ public class SortingAlgorithms {
         for(int i = 0; i < num; i++, rightEnd--)
             a[rightEnd] = tmp[rightEnd];
     }
+    
+    private static void mergeSort(String [ ] a, String [ ] tmp, int left, int right)
+	{
+		if( left < right )
+		{
+			int center = (left + right) / 2;
+			mergeSort(a, tmp, left, center);
+			mergeSort(a, tmp, center + 1, right);
+			merge(a, tmp, left, center + 1, right);
+		}
+	}
+
+
+    private static void merge(String[ ] a, String[ ] tmp, int left, int right, int rightEnd )
+    {
+        int leftEnd = right - 1;
+        int k = left;
+        int num = rightEnd - left + 1;
+
+        while(left <= leftEnd && right <= rightEnd)
+            if(a[left].compareTo(a[right]) < 0)
+                tmp[k++] = a[left++];
+            else
+                tmp[k++] = a[right++];
+
+        while(left <= leftEnd)    // Copy rest of first half
+            tmp[k++] = a[left++];
+
+        while(right <= rightEnd)  // Copy rest of right half
+            tmp[k++] = a[right++];
+
+        // Copy tmp back
+        for(int i = 0; i < num; i++, rightEnd--)
+            a[rightEnd] = tmp[rightEnd];
+    }
 
 	public static int mergeSort(String [ ] a, String search)
 	{
 		Comparable[] tmp = new Comparable[a.length];
 		mergeSort(a, tmp,  0,  a.length - 1);
+		return 0;
+	}
+	
+	public static int mergeSort(String [ ] a, int i, int j)
+	{
+		Comparable[] tmp = new Comparable[a.length];
+		mergeSort(a, tmp,  i,  j - 1);
 		return 0;
 	}
 
@@ -391,31 +426,39 @@ public class SortingAlgorithms {
             a[rightEnd] = tmp[rightEnd];
     }
 
+	public static int hashCode(String letters) {
+		int l1 = ((int) letters.charAt(0)) - 97;
+		int l2 = ((int) letters.charAt(1)) - 97;
+		return 26 * l1 + l2;
+	}
+
+	
 	public static int bucketSort(String[] a, String search) {
-	      String[][] bucket = new String[26][10000];
-	      String[][] trimmedBucket = new String[26][];
+	      String[][] bucket = new String[676][40];
 	      int matchIdx = -1;
-	      int[] indices = new int[26];
+	      int[] indices = new int[676];
 	      for (int i=0; i <a.length; i++) {
-	    	  String current = a[i];
-	    	  int bucketIdx = mapChar(current.charAt(0));
-	          bucket[bucketIdx][indices[bucketIdx]++] = current;
+	    	  int bucketIdx = hashCode(a[i].substring(0, 3));
+    		  bucket[bucketIdx][indices[bucketIdx]++] = a[i];
 	      }
 
-	      for (int i=0; i<bucket.length; i++) {
-	    	  trimmedBucket[i] = Arrays.copyOf(bucket[i], indices[i]);
-	      }
-
-	      for (int i=0; i< trimmedBucket.length; i++) {
-	    	  quickSort(trimmedBucket[i], 0, trimmedBucket[i].length);
+	      for (int i=0; i < bucket.length; i++) {
+	    	  if (indices[i] != 0) {
+	    		  //insertionSort(bucket[i]);
+	    		  quickSort(bucket[i], 0, indices[i]);
+	    		  //mergeSort(bucket[i], 0, indices[i]);
+	    	  }
 	      }
 
 	      int pos = 0;
-	      for (int i = 0; i < trimmedBucket.length; i++) {
-	    	  for (int j = 0; j < trimmedBucket[i].length; j++) {
-	    		  if (trimmedBucket[i][j].equals(search))
+	      for (int i = 0; i < bucket.length; i++) {
+	    	  for (int j = 0; j < bucket[i].length; j++) {
+	    		  if (bucket[i][j] == null) {
+    				  break;
+    			  }
+    			  if (bucket[i][j].equals(search))
 	    			  matchIdx = pos;
-	    		  a[pos++] = trimmedBucket[i][j];
+	    		  a[pos++] = bucket[i][j];
 	    	  }
 	      }
 	     return matchIdx;

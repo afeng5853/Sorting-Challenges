@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Note: Numbers are printed to prevent JIT from optimizing
  *  1. bucket sort / counting sort 				   100138
- *	2. radix sort    		 			           1139166    parallel version did not work (maybe find one?)
+ *	2. bucket sort    		 			           1015406    parallel radix sort as a possiblity?
  *	3. bucket sort / counting sort   			   106706     is a section of the array 75% sorted or is 75% of numbers in the correct position of the sorted array
  *												   30000      for 75% correct position
  *  4. bucket sort / counting sort with parallel   12626821
@@ -24,13 +24,13 @@ public class Runner {
 
 	public static void challengeOne() {
 		System.out.println("Challenge 1");
-		BigInteger time1 = TestCases.calculateTimeDoubleRandom(SortingAlgorithms::countingSort, GenerateArray::generateRandomIntArr, 1);
+		BigInteger time1 = TestCases.calculateTimeDoubleRandom(SortingAlgorithms::countingSort, GenerateArray::generateRandomIntArr, 1000);
 
 		//BigInteger time2 = TestCases.calculateTimeDoubleRandom(SortingAlgorithms::radixSort, GenerateArray::generateRandomIntArr, 1000);
 
 		//BigInteger time3 = TestCases.calculateTimeDoubleRandom(SortingAlgorithms::quickSort, GenerateArray::generateRandomIntArr, 1000);
 
-		BigInteger time4 = TestCases.calculateTimeDoubleRandom(SortingAlgorithms::bucketSort, GenerateArray::generateRandomIntArr, 1);
+		BigInteger time4 = TestCases.calculateTimeDoubleRandom(SortingAlgorithms::bucketSort, GenerateArray::generateRandomIntArr, 1000);
 
 		//BigInteger time5 = TestCases.calculateTimeDoubleRandom(GenerateArray::generateRandomIntArr, 1000);
 
@@ -49,21 +49,21 @@ public class Runner {
 	public static void challengeTwo() {
 		System.out.println("Challenge 2");
 
-		BigInteger time1 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::quickSort, GenerateArray::generateRandomStringArr, 1000);
+		//BigInteger time1 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::quickSort, GenerateArray::generateRandomStringArr, 1000);
 
-		BigInteger time2 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::radixSort, GenerateArray::generateRandomStringArr, 1000);
+		//BigInteger time2 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::radixSort, GenerateArray::generateRandomStringArr, 1000);
 
 		BigInteger time3 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::bucketSort, GenerateArray::generateRandomStringArr, 1000);
 
-		BigInteger time4 = TestCases.calculateTimeDoubleRandomString(GenerateArray::generateRandomStringArr, 1000);
+		//BigInteger time4 = TestCases.calculateTimeDoubleRandomString(GenerateArray::generateRandomStringArr, 1000);
 
-		BigInteger time5 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::mergeSort, GenerateArray::generateRandomStringArr, 1000);
+		//BigInteger time5 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::mergeSort, GenerateArray::generateRandomStringArr, 1000);
 
-		System.out.println("Quick Sort:  " + time1);
-		System.out.println("Radix Sort:  " + time2);
+		//System.out.println("Quick Sort:  " + time1);
+		//System.out.println("Radix Sort:  " + time2);
 		System.out.println("Bucket Sort: " + time3);
-		System.out.println("Arrays.Sort: " + time4);
-		System.out.println("Merge Sort:  " + time5);
+		//System.out.println("Arrays.Sort: " + time4);
+		//System.out.println("Merge Sort:  " + time5);
 		System.out.println();
 	}
 
