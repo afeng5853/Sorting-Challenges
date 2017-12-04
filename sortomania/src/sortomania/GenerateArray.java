@@ -1,5 +1,8 @@
 package sortomania;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.text.RandomStringGenerator;
@@ -33,12 +36,35 @@ public class GenerateArray {
 		Random r = new Random();
 		int[] test = new int[size];
 		for (int i = 0; i < test.length; i++) {
-			if (i < 75000) {
+			if (i < 7500) {
 				test[i] = i;
+			} else {
+				test[i] = r.nextInt(maxInt);
 			}
-			test[i] = r.nextInt(maxInt);
+			
 		}
 		return test;
+	}
+	
+	private static void swap(List<Integer> a, int i, int j) {
+		int temp = a.get(i);
+		a.set(i, a.get(j));
+		a.set(j, temp);
+	}
+	
+	public static int[] generateSortedArr75(int size, int maxInt) {
+		List<Integer> test = new ArrayList<>(10000);
+		List<Integer> test2 = new ArrayList<>(10000);
+		for (int i = 0; i < 10000; i++) {
+			test.add(i);
+			test2.add(i);
+		}
+		Collections.shuffle(test);
+		for (int i = 1; i < 1250; i++) {
+			swap(test2, test.get(i-1), test.get(i));
+		}
+		
+		return test2.stream().mapToInt(i -> i).toArray();
 	}
 
 	public static int[][] generateMultiDim(int size, int maxInt) {
