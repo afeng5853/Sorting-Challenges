@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Note: Numbers are printed to prevent JIT from optimizing
  *  1. bucket sort / counting sort 				   100138
- *	2. bucket sort    		 			           1015406    parallel radix sort as a possiblity?
+ *	2. bucket sort with quick sort	 		       970479    parallel radix sort as a possiblity?
  *	3. bucket sort / counting sort   			   106706     is a section of the array 75% sorted or is 75% of numbers in the correct position of the sorted array
  *												   30000      for 75% correct position
  *  4. bucket sort / counting sort with parallel   12626821
