@@ -432,8 +432,40 @@ public class SortingAlgorithms {
 		return 26 * l1 + l2;
 	}
 
+	public static int bucketSortWithInsert(String[] a, String search) {
+	      String[][] bucket = new String[676][40];
+	      int matchIdx = -1;
+	      int[] indices = new int[676];
+	      for (int i=0; i <a.length; i++) {
+	    	  int bucketIdx = hashCode(a[i].substring(0, 3));
+  		  bucket[bucketIdx][indices[bucketIdx]++] = a[i];
+	      }
+
+	      for (int i=0; i < bucket.length; i++) {
+	    	  if (indices[i] != 0) {
+	    		  insertionSort(bucket[i]);
+	    		  //radixSort(bucket[i], indices[i]);
+	    		  //mergeSort(bucket[i], 0, indices[i]);
+	    		  //quickSort(bucket[i], 0, indices[i]);
+	    	  }
+	      }
+
+	      int pos = 0;
+	      for (int i = 0; i < bucket.length; i++) {
+	    	  for (int j = 0; j < bucket[i].length; j++) {
+	    		  if (bucket[i][j] == null) {
+  				  break;
+  			  }
+  			  if (bucket[i][j].equals(search))
+	    			  matchIdx = pos;
+	    		  a[pos++] = bucket[i][j];
+	    	  }
+	      }
+	     return matchIdx;
+	 }
 	
-	public static int bucketSort(String[] a, String search) {
+	
+	public static int bucketSortWithQuick(String[] a, String search) {
 	      String[][] bucket = new String[676][40];
 	      int matchIdx = -1;
 	      int[] indices = new int[676];
@@ -445,8 +477,9 @@ public class SortingAlgorithms {
 	      for (int i=0; i < bucket.length; i++) {
 	    	  if (indices[i] != 0) {
 	    		  //insertionSort(bucket[i]);
-	    		  quickSort(bucket[i], 0, indices[i]);
+	    		  //radixSort(bucket[i], indices[i]);
 	    		  //mergeSort(bucket[i], 0, indices[i]);
+	    		  quickSort(bucket[i], 0, indices[i]);
 	    	  }
 	      }
 
@@ -555,6 +588,40 @@ public class SortingAlgorithms {
 			return merge(mergeSort(split1), mergeSort(split2));
 		}
 	}
+	
+	/**
+	 * https://algs4.cs.princeton.edu/51radix/LSD.java.html
+	 * @param a
+	 * @param w
+	 */
+	 public static void radixSort(String[] a, int len) {
+	        int n = len;
+	        int w = 5;
+	        int R = 256;   // extend ASCII alphabet size
+	        String[] aux = new String[n];
+
+	        for (int d = w-1; d >= 0; d--) {
+	            // sort by key-indexed counting on dth character
+
+	            // compute frequency counts
+	            int[] count = new int[R+1];
+	            for (int i = 0; i < n; i++)
+	                count[a[i].charAt(d) + 1]++;
+
+	            // compute cumulates
+	            for (int r = 0; r < R; r++)
+	                count[r+1] += count[r];
+
+	            // move data
+	            for (int i = 0; i < n; i++)
+	                aux[count[a[i].charAt(d)]++] = a[i];
+
+	            // copy back
+	            for (int i = 0; i < n; i++) {
+	                a[i] = aux[i];
+	            }
+	        }
+    }
 
 	/**
 	 * https://algs4.cs.princeton.edu/51radix/LSD.java.html

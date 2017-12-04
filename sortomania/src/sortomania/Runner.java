@@ -51,19 +51,22 @@ public class Runner {
 
 		//BigInteger time1 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::quickSort, GenerateArray::generateRandomStringArr, 1000);
 
-		//BigInteger time2 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::radixSort, GenerateArray::generateRandomStringArr, 1000);
+		BigInteger time2 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::radixSort, GenerateArray::generateRandomStringArr, 1000);
 
-		BigInteger time3 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::bucketSort, GenerateArray::generateRandomStringArr, 1000);
+		BigInteger time3 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::bucketSortWithQuick, GenerateArray::generateRandomStringArr, 1000);
 
 		//BigInteger time4 = TestCases.calculateTimeDoubleRandomString(GenerateArray::generateRandomStringArr, 1000);
 
 		//BigInteger time5 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::mergeSort, GenerateArray::generateRandomStringArr, 1000);
+		
+		BigInteger time6 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::bucketSortWithInsert, GenerateArray::generateRandomStringArr, 1000);
 
-		//System.out.println("Quick Sort:  " + time1);
-		//System.out.println("Radix Sort:  " + time2);
-		System.out.println("Bucket Sort: " + time3);
-		//System.out.println("Arrays.Sort: " + time4);
-		//System.out.println("Merge Sort:  " + time5);
+		//System.out.println("Quick Sort:            " + time1);
+		System.out.println("Radix Sort:              " + time2);
+		System.out.println("Bucket Sort w/ Quick:    " + time3);
+		//System.out.println("Arrays.Sort:           " + time4);
+		//System.out.println("Merge Sort:            " + time5);
+		System.out.println("Bucket Sort w/ Insert:   " + time6);
 		System.out.println();
 	}
 
