@@ -59,26 +59,11 @@ public class Team8SortCompetition {
 		list[j] = temp;
 	}
 
-	/**
-	 * Swaps two integers in an array
-	 * @param list the array with the integers
-	 * @param i the integer to be swapped
-	 * @param j them integer to be swapped
-	 */
 
-	private static void swap(int[] list, int i, int j) {
-		int temp = list[i];
-		list[i] = list[j];
-		list[j] = temp;
-	}
-	
-	private static void insertionSort(String[] list1) {
-		for (int i = 1; i < list1.length; i++) {
+	private static void insertionSort(String[] list1, int end) {
+		for (int i = 1; i < end; i++) {
 			int j = i-1;
 			int k = i;
-			if (list1[k] == null || list1[j] == null) {
-				break;
-			}
 			while (j != -1 && list1[k].compareTo(list1[j]) < 0) {
 				swap(list1, k, j);
 				j--;
@@ -87,8 +72,38 @@ public class Team8SortCompetition {
 		}
 	}
 	
+	public static int partition(int[] list, int a, int b) {
+		// if list is empty
+		if (list.length == 0) {
+			return -1;
+		}
+		int pivot = list[a]; // set pivot to first item
+		int j = a; // current index to swap for items less than the pivot
+		int pivotIdx = a;
+		for (int i = a + 1; i < b; i++) {
+			if (list[i] <= pivot) {
+				// track pivot index
+				if (pivotIdx == j) {
+					pivotIdx = i;
+				}
+				// swap pivot to latest index in the small partition
+				int temp = list[j];
+				list[j] = list[i];
+				list[i] = temp;
+				j++;
+			}
+
+		}
+		// return pivot to correct location
+		int temp = list[pivotIdx];
+		list[pivotIdx] = list[j];
+		list[j] = temp;
+		return j;
+	}
+	
+	
 	public static int challengeTwo(String[] a, String search) {
-	      String[][] bucket = new String[2704][15];
+	      String[][] bucket = new String[2704][20];
 	      int matchIdx = -1;
 	      int[] indices = new int[2704];
 	      for (int i=0; i <a.length; i++) {
@@ -98,7 +113,7 @@ public class Team8SortCompetition {
 
 	      for (int i=0; i < bucket.length; i++) {
 	    	  if (indices[i] != 0) {
-	    		  insertionSort(bucket[i]);
+	    		  insertionSort(bucket[i], indices[i]);
 	    	  }
 	      }
 
@@ -208,17 +223,56 @@ public class Team8SortCompetition {
 		
 		return bucketSortMedians(arr, medians);
 	}
-/*
-	@Override
-	public int challengeFive(Object[] arr) {
-		// TODO Auto-generated method stub
-		return 0;
+	
+	public static int partition(Object[] list, int a, int b) {
+		// if list is empty
+		if (list.length == 0) {
+			return -1;
+		}
+		Object pivot = list[a]; // set pivot to first item
+		int j = a; // current index to swap for items less than the pivot
+		int pivotIdx = a;
+		for (int i = a + 1; i < b; i++) {
+			if (((Comparable) list[i]).compareTo(pivot) < 0) {
+				// track pivot index
+				if (pivotIdx == j) {
+					pivotIdx = i;
+				}
+				// swap pivot to latest index in the small partition
+				swap(list, i, j);
+				j++;
+			}
+
+		}
+		// return pivot to correct location
+		swap(list, pivotIdx, j);
+		return j;
+	}
+	
+	public static void quickSort(Object[] arr, int i, int j) {
+		if (j - i <= 1) {
+			return; 
+		}
+		else {
+			//CopyArrays.printArray(arr);
+			int pivotIdx = partition(arr, i, j);
+			quickSort(arr, i, pivotIdx);
+			quickSort(arr, pivotIdx + 1, j);
+		}
+	}
+	
+	public static int challengeFive(Object[] arr, Object obj) {
+		quickSort(arr, 0, arr.length);
+		for (int i = 0; i < arr.length; i++) {
+			if (obj.equals(arr[i])) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
-	@Override
 	public String greeting() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-*/
 }
