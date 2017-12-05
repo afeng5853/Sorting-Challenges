@@ -16,11 +16,26 @@ import java.util.Arrays;
  */
 public class Runner {
 	public static void main(String[] args) {
+		test();
 		//challengeOne();
 		//challengeTwo();
 		//challengeThree();
 		//challengeFour();
-		challengeFive();
+		//challengeFive();
+	}
+	
+	public static void test() {
+		Team8SortCompetition t8 = new Team8SortCompetition();
+		BigInteger time1 = TestCases.calculateTimeIntegerRandom(Team8SortCompetition::challengeOne, GenerateArray::generateRandomIntArr, 10);
+		BigInteger time2 = TestCases.calculateTimeDoubleRandomString(Team8SortCompetition::challengeTwo, GenerateArray::generateRandomStringArr, 10);
+		BigInteger time3 = TestCases.calculateTimeIntegerRandom(Team8SortCompetition::challengeThree, GenerateArray::generateSortedArr75, 10);
+		BigInteger time4 = TestCases.calculateTimeDoubleRandomMat(Team8SortCompetition::challengeFour, GenerateArray::generateMultiDim, 10);
+	
+		System.out.println("Challenge 1: " + time1);
+		System.out.println("Challenge 2: " + time2);
+		System.out.println("Challenge 3: " + time3);
+		System.out.println("Challenge 4: " + time4);
+	
 	}
 
 	public static void challengeOne() {
@@ -51,7 +66,7 @@ public class Runner {
 	public static void challengeTwo() {
 		System.out.println("Challenge 2");
 
-		BigInteger time1 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::quickSort, GenerateArray::generateRandomStringArr, 10);
+		//BigInteger time1 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::quickSort, GenerateArray::generateRandomStringArr, 10);
 
 		BigInteger time2 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::radixSort, GenerateArray::generateRandomStringArr, 10);
 
@@ -63,7 +78,7 @@ public class Runner {
 		
 		BigInteger time6 = TestCases.calculateTimeDoubleRandomString(SortingAlgorithms::bucketSortWithInsert, GenerateArray::generateRandomStringArr, 10);
 
-		System.out.println("Quick Sort:            " + time1);
+		//System.out.println("Quick Sort:            " + time1);
 		System.out.println("Radix Sort:            " + time2);
 		System.out.println("Bucket Sort w/ Quick:  " + time3);
 		System.out.println("Arrays.Sort:           " + time4);

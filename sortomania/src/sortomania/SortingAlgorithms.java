@@ -174,59 +174,118 @@ public class SortingAlgorithms {
 		list[j] = temp;
 		return j;
 	}
-
-	public static int[] dualPartition(String[] list, int a, int b) {
-		if (list[a].compareTo(list[b]) > 0) {
-			swap(list, a, b);
+	
+	public static int partition(Comparable[] list, int a, int b) {
+		// if list is empty
+		if (list.length == 0) {
+			return -1;
 		}
-		
-		int j = a + 1;
-		int g = b - 1;
-		int k = a + 1;
-		String p = list[a];
-		String q = list[b];
-		
-		while (k <= g) {
-			if (list[k].compareTo(p) < 0) {
-				swap(list, k, j);
-				j++;	
-			} else if (list[k].compareTo(q) >= 0) {
-				while(list[g].compareTo(q) > 0 && k < g) {
-					g--;
+		Comparable pivot = list[a]; // set pivot to first item
+		int j = a; // current index to swap for items less than the pivot
+		int pivotIdx = a;
+		for (int i = a + 1; i < b; i++) {
+			if (list[i].compareTo(pivot) <= 0) {
+				// track pivot index
+				if (pivotIdx == j) {
+					pivotIdx = i;
 				}
-				if (list[k].compareTo(p) < 0) {
-					swap(list, k, j);
-					j++;
-				}
-				
+				// swap pivot to latest index in the small partition
+				Comparable temp = list[j];
+				list[j] = list[i];
+				list[i] = temp;
+				j++;
 			}
-			k++;
-		}
-		j--;
-		g++;
-		
-		swap(list, a, j);
-		swap(list, b, g);
-		
-		return new int[] {j, g};
-	}
 
+		}
+		// return pivot to correct location
+		Comparable temp = list[pivotIdx];
+		list[pivotIdx] = list[j];
+		list[j] = temp;
+		return j;
+	}
+	
+	public static int partition(String[] list, int a, int b) {
+		// if list is empty
+		if (list.length == 0) {
+			return -1;
+		}
+		String pivot = list[a]; // set pivot to first item
+		int j = a; // current index to swap for items less than the pivot
+		int pivotIdx = a;
+		for (int i = a + 1; i < b; i++) {
+			if (list[i].compareTo(pivot) < 0) {
+				// track pivot index
+				if (pivotIdx == j) {
+					pivotIdx = i;
+				}
+				// swap pivot to latest index in the small partition
+				swap(list, i, j);
+				j++;
+			}
+
+		}
+		// return pivot to correct location
+		swap(list, pivotIdx, j);
+		return j;
+	}
+	
 	public static double quickSort(String[] arr, int i, int j) {
 		if (j - i <= 1) {
 			return 0;
 		}
 		else {
 			//CopyArrays.printArray(arr);
-			int[] pivotIdxs = dualPartition(arr, i, j-1);
-			int lp = pivotIdxs[0];
-			int rp = pivotIdxs[1];
-			quickSort(arr, i, lp - 1);
-			quickSort(arr, lp + 1, rp - 1);
-			quickSort(arr, rp + 1, j);
+			int pivotIdx = partition(arr, i, j);
+			quickSort(arr, i, pivotIdx);
+			quickSort(arr, pivotIdx + 1, j);
 			return 0;
 		}
 	}
 	
+	public static void quickSort(Comparable[] arr, int i, int j) {
+		if (j - i <= 1) {
+			return; 
+		}
+		else {
+			//CopyArrays.printArray(arr);
+			int pivotIdx = partition(arr, i, j);
+			quickSort(arr, i, pivotIdx);
+			quickSort(arr, pivotIdx + 1, j);
+		}
+	}
+	/*
+	public static void quickSort(Comparable[] a, int lo, int hi) {
+		hi--;
+		if (hi <= lo) return;
+
+        if (a[hi].compareTo(a[lo]) < 0)
+        	swap(a, lo, hi);
+
+        int lt = lo + 1, gt = hi - 1;
+        int i = lo + 1;
+        while (i <= gt) {
+            if (a[i].compareTo(a[lo]) < 0)  {
+            	swap(a, lt++, i++);
+            }
+            else if (a[hi].compareTo(a[i]) < 0) {
+            	swap(a, i, gt--);
+            }
+            else {
+        		i++;
+        	}
+        }
+        swap(a, lo, --lt);
+        swap(a, hi, ++gt);
+
+        // recursively sort three subarrays
+        quickSort(a, lo, lt-1);
+        if (a[lt].compareTo(a[gt]) < 0) { 
+        	quickSort(a, lt+1, gt-1);
+        }
+        quickSort(a, gt+1, hi);
+
+	}
+	*/
 	/**
 	 * Sorts an array using quick sort
 	 * @param arr the array to be sorted
@@ -472,15 +531,26 @@ public class SortingAlgorithms {
     }
 
 	public static int hashCode(String letters) {
-		int l1 = ((int) letters.charAt(0)) - 97;
-		int l2 = ((int) letters.charAt(1)) - 97;
-		return 26 * l1 + l2;
+		char c1 = letters.charAt(0);
+		char c2 = letters.charAt(1);
+		int l1, l2;
+		if (Character.isUpperCase(c1)) {
+			l1 = ((int) c1) - 65;
+		} else {
+			l1 = ((int) c1) - 71;
+		}
+		if (Character.isUpperCase(c2)) {
+			l2 = ((int) c2) - 65;
+		} else {
+			l2 = ((int) c2) - 71;
+		}
+		return 52 * l1 + l2;
 	}
 
 	public static int bucketSortWithInsert(String[] a, String search) {
-	      String[][] bucket = new String[676][40];
+	      String[][] bucket = new String[2704][15];
 	      int matchIdx = -1;
-	      int[] indices = new int[676];
+	      int[] indices = new int[2704];
 	      for (int i=0; i <a.length; i++) {
 	    	  int bucketIdx = hashCode(a[i].substring(0, 3));
   		  bucket[bucketIdx][indices[bucketIdx]++] = a[i];
@@ -489,9 +559,6 @@ public class SortingAlgorithms {
 	      for (int i=0; i < bucket.length; i++) {
 	    	  if (indices[i] != 0) {
 	    		  insertionSort(bucket[i]);
-	    		  //radixSort(bucket[i], indices[i]);
-	    		  //mergeSort(bucket[i], 0, indices[i]);
-	    		  //quickSort(bucket[i], 0, indices[i]);
 	    	  }
 	      }
 
@@ -511,9 +578,9 @@ public class SortingAlgorithms {
 	
 	
 	public static int bucketSortWithQuick(String[] a, String search) {
-	      String[][] bucket = new String[676][40];
+	      String[][] bucket = new String[2704][15];
 	      int matchIdx = -1;
-	      int[] indices = new int[676];
+	      int[] indices = new int[2704];
 	      for (int i=0; i <a.length; i++) {
 	    	  int bucketIdx = hashCode(a[i].substring(0, 3));
     		  bucket[bucketIdx][indices[bucketIdx]++] = a[i];
@@ -521,9 +588,6 @@ public class SortingAlgorithms {
 
 	      for (int i=0; i < bucket.length; i++) {
 	    	  if (indices[i] != 0) {
-	    		  //insertionSort(bucket[i]);
-	    		  //radixSort(bucket[i], indices[i]);
-	    		  //mergeSort(bucket[i], 0, indices[i]);
 	    		  quickSort(bucket[i], 0, indices[i]);
 	    	  }
 	      }
@@ -829,6 +893,7 @@ public class SortingAlgorithms {
     }
 
 	public static double bucketSortMedians(int[][] arr, double[] medians) {
+		
 		  ArrayList<int[]>[] bucket = new ArrayList[20000];
 
 		  for (int i = 0; i < bucket.length; i++) {

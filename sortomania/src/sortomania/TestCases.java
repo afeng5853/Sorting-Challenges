@@ -27,9 +27,9 @@ public class TestCases {
 	 * @param iterations
 	 * @return
 	 */
-	public static BigInteger calculateTimeDoubleRandom(Function<int[],Double> func, BiFunction<Integer, Integer, int[]> generate,  int iterations) {
+	public static BigInteger calculateTimeIntegerRandom(Function<int[],Integer> func, BiFunction<Integer, Integer, int[]> generate,  int iterations) {
 		BigInteger sum = BigInteger.valueOf(0);
-		Double median = -1.0;
+		Integer median = -1;
 		for (int i = 0; i < iterations; i++) {
 			int[] tested = generate.apply(10000, 10000);
 			long time = System.nanoTime();
@@ -80,9 +80,9 @@ public class TestCases {
 		return sum.divide(BigInteger.valueOf(iterations));
 	}
 
-	public static BigInteger calculateTimeDoubleRandomMat(Function<int[][],Double> func, BiFunction<Integer, Integer, int[][]> generate,  int iterations) {
+	public static BigInteger calculateTimeDoubleRandomMat(Function<int[][],Integer> func, BiFunction<Integer, Integer, int[][]> generate,  int iterations) {
 		BigInteger sum = BigInteger.valueOf(0);
-		Double median = -1.0;
+		Integer median = -1;
 		for (int i = 0; i < iterations; i++) {
 			int[][] tested = generate.apply(1000, 10000);
 			long time = System.nanoTime();
@@ -121,7 +121,6 @@ public class TestCases {
 			BigInteger calcTime = BigInteger.valueOf((System.nanoTime() - time));
 			System.out.println(calcTime);
 			sum = sum.add(calcTime);
-			printArray(tested);
 			assert(isSorted(tested));
 		}
 		return sum.divide(BigInteger.valueOf(iterations));
@@ -211,6 +210,7 @@ public class TestCases {
 	public static boolean isSorted(String[] a) {
 		for (int i = 1; i < a.length; i++) {
 			if (a[i].compareTo(a[i-1]) < 0) {
+				System.out.println(a[i] + " " + a[i-1]);
 				return false;
 			}
 		}

@@ -22,7 +22,7 @@ public class GenerateArray {
 
 	public static String[] generateRandomStringArr(int size, int length) {
 		RandomStringGenerator generator = new RandomStringGenerator.Builder()
-		        .withinRange('a', 'z')
+		        .withinRange('A', 'z')
 		        .filteredBy(LETTERS)
 		        .build();
 		String[] test = new String[size];
