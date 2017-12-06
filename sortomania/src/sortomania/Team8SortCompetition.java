@@ -1,6 +1,7 @@
 package sortomania;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -140,14 +141,73 @@ public class Team8SortCompetition extends SortCompetition {
 		return bucketSortMedians(arr, medians);
 	}
 	
+	private static void merge(Comparable[] a, int lo, int mid, int hi) {
+        // precondition: a[lo .. mid] and a[mid+1 .. hi] are sorted subarrays
+		Comparable[] aux = new Comparable[a.length];
+        // copy to aux[]
+        for (int k = lo; k <= hi; k++) {
+            aux[k] = a[k]; 
+        }
+
+        // merge back to a[]
+        int i = lo, j = mid+1;
+        for (int k = lo; k <= hi; k++) {
+            if      (i > mid)              a[k] = aux[j++];
+            else if (j > hi)               a[k] = aux[i++];
+            else if (aux[j].compareTo(aux[i]) < 0) a[k] = aux[j++];
+            else                           a[k] = aux[i++];
+        }
+
+        // postcondition: a[lo .. hi] is sorted
+    }
+	
 	/**
 	 * implementation of quicksort where the object is searched using binary search
 	 * @param arr the array to be sorted
 	 * @param obj the object to be searched
 	 */
-	@Override
-	public int challengeFive(Comparable[] arr, Comparable obj) {
-		quickSort(arr, 0, arr.length - 1);
+	public static int challengeFive(Comparable[] arr, Comparable obj) {
+		int mid = arr.length / 2;
+		ExecutorService executor = Executors.newFixedThreadPool(2);
+		CompletionService<Void> completionService = new ExecutorCompletionService<Void>(executor);
+		Callable<Void> c = new Callable<Void>() {
+			@Override
+			public Void call() {
+				quickSort(arr, 0, mid);
+				return null;
+			}
+		};
+		Callable<Void> c1 = new Callable<Void>() {
+			@Override
+			public Void call() {
+				quickSort(arr, mid + 1, arr.length - 1);
+				return null;
+			}
+		};
+		completionService.submit(c);
+		completionService.submit(c1);
+	
+		int received = 0;
+		boolean errors = false;
+	
+		while (received < 2 && !errors) {
+			Future<Void> resultFuture = null;
+			try {
+				resultFuture = completionService.take();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				resultFuture.get();
+				received++;
+			} catch (Exception e) {
+				e.printStackTrace();
+				errors = true;
+			}
+		}
+		//System.out.println(TestCases.isSorted(Arrays.copyOfRange(arr, 0, mid)));
+		//System.out.println(TestCases.isSorted(Arrays.copyOfRange(arr, mid, arr.length)));
+		merge(arr, 0, mid, arr.length - 1);
 		return binarySearch(arr, obj);
 	}
 
@@ -155,7 +215,7 @@ public class Team8SortCompetition extends SortCompetition {
 		return "0";
 	}
 
-	private void swap(Object[] list, int i, int j) {
+	private static void swap(Object[] list, int i, int j) {
 		Object temp = list[i];
 		list[i] = list[j];
 		list[j] = temp;
@@ -199,7 +259,7 @@ public class Team8SortCompetition extends SortCompetition {
 		return median(a, a.length);
 	}
 
-	private int partition(Comparable[] arr, int low, int high) {
+	private static int partition(Comparable[] arr, int low, int high) {
 		Comparable pivot = arr[high];
 		int i = low - 1;
 
@@ -213,8 +273,21 @@ public class Team8SortCompetition extends SortCompetition {
 		return i + 1;
 	}
 
-	private void insertionSort(Comparable[] list1, int start, int end) {
-		for (int i = start; i < end; i++) {
+	/*
+	 * private static void insertionSort(Comparable[] list1, int start, int end) {
+		for (int i = start; i <= end; i++) {
+			int j = i - 1;
+			Comparable key = list1[i];
+			while (j >= 0 && list1[j].compareTo(key) > 0) {
+				list1[j+1] = list1[j];
+				j = j - 1;
+			}
+			list1[j + 1] = key;
+		}
+	}
+	 */
+	private static void insertionSort(Comparable[] list1, int start, int end) {
+		for (int i = start; i <= end; i++) {
 			int j = i - 1;
 			int k = i;
 			while (j != -1 && list1[k].compareTo(list1[j]) < 0) {
@@ -225,12 +298,12 @@ public class Team8SortCompetition extends SortCompetition {
 		}
 	}
 
-	private void quickSort(Comparable[] arr, int i, int j) {
-		int len = j - i;
-		if (len < 9) {
-			insertionSort(arr, i, j + 1);
-			return;
-		}
+	private static void quickSort(Comparable[] arr, int i, int j) {
+		// does not work with parallelism
+		/*
+		if (i < j && j - i < 9) {
+			insertionSort(arr, i, j);
+		}*/
 		while (i < j) {
 			int p = partition(arr, i, j);
 			if (p - i < j - p) {
@@ -243,7 +316,7 @@ public class Team8SortCompetition extends SortCompetition {
 		}
 	}
 
-	private int binarySearch(Comparable[] arr, Comparable obj) {
+	private static int binarySearch(Comparable[] arr, Comparable obj) {
 		int l = 0;
 		int r = arr.length - 1;
 		while (l <= r) {
@@ -258,6 +331,11 @@ public class Team8SortCompetition extends SortCompetition {
 			}
 		}
 		return -1;
+	}
+
+	@Override
+	public int challengeFive(Object[] arr, Object item) {
+		return 0;
 	}
 
 }
