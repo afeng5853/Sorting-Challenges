@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class Team8SortCompetition extends SortCompetition {
+public class Team8SortCompetition {
 
 	/**
 	 * gets the median of an array (truncated)
@@ -17,7 +17,7 @@ public class Team8SortCompetition extends SortCompetition {
 	 * @param len length of the array
 	 * @return the median of the array (truncated)
 	 */
-	private int median(int[] a, int len) {
+	private static int median(int[] a, int len) {
 		return (a[len / 2 - 1] + a[len / 2]) / 2;
 	}
 
@@ -26,19 +26,20 @@ public class Team8SortCompetition extends SortCompetition {
 	 * @param arr the array to be sorted
 	 * @return the median of the array
 	 */
-	@Override
-	public int challengeOne(int[] arr) {
+	public static int challengeOne(int[] arr) {
 		int[] stored = new int[10001]; // number of buckets = max num
-		for (int i = 0; i < arr.length; i++) {
+		int i, x, y;
+		i = x = y = 0;
+		for (; i < 10000; ++i) {
 			stored[arr[i]]++; // fill the buckets with the integers
 		}
 		int resultIdx = 0;
-		for (int i = 0; i < stored.length; i++) {
-			for (int j = 0; j < stored[i]; j++) {
+		for (; x < 10001; ++x) {
+			for (; y < stored[i]; ++y) {
 				arr[resultIdx++] = i; // copy the numbers
 			}
 		}
-		return median(arr, arr.length);
+		return (arr[4999] + arr[5000]) / 2;
 	}
 	
 	/**
