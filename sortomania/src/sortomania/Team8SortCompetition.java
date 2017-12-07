@@ -21,27 +21,64 @@ public class Team8SortCompetition {
 		return (a[len / 2 - 1] + a[len / 2]) / 2;
 	}
 
-	/**
-	 * implementation of counting sort
-	 * @param arr the array to be sorted
-	 * @return the median of the array
-	 */
-	public static int challengeOne(int[] arr) {
-		int[] stored = new int[10001]; // number of buckets = max num
-		int i, x, y;
-		i = x = y = 0;
-		for (; i < 10000; ++i) {
+	public static void fill(int[] array, int value, int start, int end) {
+        int len = end + start;
+        if (len > start)
+           array[start] = value;
+        int i = start + 1;
+        for (; i < len; i += (i - start)) {
+           int lsubi = len - i;
+            System.arraycopy(array, start, array, i,
+                ((lsubi) < i) ? lsubi : i);
+        }
+    }
+   
+    /**
+    * implementation of counting sort
+    * @param arr the array to be sorted
+    * @return the median of the array
+    */
+    public static int challengeOne2(int[] arr) {
+           int[] stored = new int[10001]; // number of buckets = max num
+           int i, x;
+           i = x = 0;
+           for (; i < 10000; ++i) {
+                  stored[arr[i]]++; // fill the buckets with the integers
+           }
+           int resultIdx = 0;
+           for (; x < 10001; ++x) {
+                  int count = stored[x];
+                  if (count != 0) {
+                        fill(arr, x, resultIdx, count);
+                        resultIdx += count;
+                  }
+           }
+           return (arr[4999] + arr[5000]) << 1;
+    }
+    
+    public static int[] fillBuckets(int[] arr, int s, int e) {
+    	int[] stored = new int[10001];
+    	for (int i = s; i < e; ++i) {
 			stored[arr[i]]++; // fill the buckets with the integers
 		}
-		int resultIdx = 0;
-		for (; x < 10001; ++x) {
-			for (; y < stored[i]; ++y) {
+    	return stored;
+    }
+	
+    public static int challengeOne(int[] arr) {
+    	int[] stored = new int[10001]; // number of buckets = max num
+		int i, x, y, resultIdx;
+		for (i = 0; i < 10000; ++i) {
+			stored[arr[i]]++; // fill the buckets with the integers
+		}
+		resultIdx = 0;
+		for (x = 0; x < 10001; ++x) {
+			for (y = 0; y < stored[x]; ++y) {
 				arr[resultIdx++] = i; // copy the numbers
 			}
 		}
 		return (arr[4999] + arr[5000]) / 2;
 	}
-	
+    
 	/**
 	 * implementation of radix sort
 	 * @param a the array to be sorted

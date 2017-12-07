@@ -33,6 +33,7 @@ public class Runner {
 		//BigInteger time5 = TestCases.calculateTimeDoubleRandomString(Team8SortCompetition::challengeFive, GenerateArray::generateRandomStringArr, 10);
 	
 		System.out.println("Challenge 1: " + time1);
+		
 		//System.out.println("Challenge 2: " + time2);
 		//System.out.println("Challenge 3: " + time3);
 		//System.out.println("Challenge 4: " + time4);
